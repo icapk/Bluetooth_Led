@@ -10,7 +10,15 @@
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn"
         android:layout_width="wrap_content"
-
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/reflesh"
+        android:tint="@color/white"
+        android:visibility="visible"
+        android:background="#636363"  />
 
 </android.support.design.widget.CoordinatorLayout>
