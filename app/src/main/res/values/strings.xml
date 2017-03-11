@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">蓝牙点阵</string>
+    <string name="title">未连接</string>
+    <string name="open">打开</string>
+    <string name="close">关闭</string>
+    <string name="ble_conned">已连接</string>
+</resources>
