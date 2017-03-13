@@ -30,6 +30,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.icapk.bluetooth.utils.snackbar_utils;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -86,7 +88,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swiperefreshlayout);
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
-//        btn = (Button)findViewById(R.id.btn_search);
         btn = (FloatingActionButton)findViewById(R.id.fab_search);
 
         mLv = (ListView)findViewById(R.id.lv);
@@ -139,7 +140,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         //设置下拉圆圈里进度条的颜色
         mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE,Color.BLACK,Color.GREEN,Color.RED);
         //设置下拉圆圈的大小
-        mSwipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        mSwipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         //设置手指下拉多少距离触发刷新
 //        mSwipeRefreshLayout.setDistanceToTriggerSync(300);
         //设置下拉刷新的监听事件
@@ -148,14 +149,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             public void onRefresh() {
                 if (!isFlresh){
                     isFlresh = true;
+
                     mDevices.clear();
                     mBluetoothAdapter.startDiscovery();
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mSwipeRefreshLayout.setRefreshing(false);
-
-                            make(getCurrentFocus(),"刷新完成", BaseTransientBottomBar.LENGTH_SHORT).show();
+                            Snackbar sk = Snackbar.make(getCurrentFocus(),"刷新完成", BaseTransientBottomBar.LENGTH_SHORT);
+                            snackbar_utils.setSnackbarColor(sk,Color.BLUE,Color.WHITE);
+                            sk.show();
                             isFlresh = false;
                         }
                     },12000);
@@ -163,47 +166,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
-//        btn.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return gestureDetector.onTouchEvent(event);
-//            }
-//        });
-//        gestureDetector = new GestureDetector(getApplicationContext(), new GestureDetector.SimpleOnGestureListener() {
-//
-//            /**
-//             * 发生确定的单击时执行
-//             * @param e
-//             * @return
-//             */
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {//单击事件
-//
-//                Toast.makeText(getApplicationContext(),"这是单击事件", Toast.LENGTH_SHORT).show();
-//                return super.onSingleTapConfirmed(e);
-//            }
-//
-//            /**
-//             * 双击发生时的通知
-//             * @param e
-//             * @return
-//             */
-//            @Override
-//            public boolean onDoubleTap(MotionEvent e) {//双击事件
-//                Toast.makeText(getApplicationContext(),"这是双击事件",Toast.LENGTH_SHORT).show();
-//                return super.onDoubleTap(e);
-//            }
-//
-//            /**
-//             * 双击手势过程中发生的事件，包括按下、移动和抬起事件
-//             * @param e
-//             * @return
-//             */
-//            @Override
-//            public boolean onDoubleTapEvent(MotionEvent e) {
-//                return super.onDoubleTapEvent(e);
-//            }
-//        });
 
         final Handler handler = new Handler() {
             @Override
@@ -211,10 +173,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case 1:
-                        Snackbar.make(getCurrentFocus(),"双击事件",Snackbar.LENGTH_SHORT).show();
+                        Snackbar sk = Snackbar.make(findViewById(R.id.toolbar),"双击事件",Snackbar.LENGTH_SHORT);
+                        snackbar_utils.setSnackbarColor(sk,Color.BLUE,Color.WHITE);
+                        sk.show();
                         break;
                     case 2:
-                        Snackbar.make(getCurrentFocus(),"单击事件",Snackbar.LENGTH_SHORT).show();
+                        Snackbar _sk = Snackbar.make(getCurrentFocus(),"单击事件",Snackbar.LENGTH_SHORT);
+                        snackbar_utils.setSnackbarColor(_sk,Color.BLUE,Color.WHITE);
+                        _sk.show();
                         break;
                 }
             }
@@ -313,7 +279,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
     }
 
-    //初始化扫描到的蓝牙列表
+    /**
+     * 初始化扫描到的蓝牙列表
+     */
     private ArrayList<BluetoothDevice> mDevices = new ArrayList<BluetoothDevice>();
     //注册广播监听蓝牙，监听有无可用蓝牙设备
     private BroadcastReceiver mBluetoothReceiver = new BroadcastReceiver() {
@@ -326,12 +294,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 mDevices.add(device);
                 mAdapter.notifyDataSetChanged();
-//                Toast.makeText(getApplicationContext(), device.getClass(), Toast.LENGTH_SHORT).show();
-                System.out.println("搜索的设备  "+device.getName()+"--"+device.getBluetoothClass().toString());
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-//                btn.setText("正在搜索...");
+
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-//                btn.setText("搜索");
                 btn.setClickable(true);
             }
         }
@@ -393,9 +358,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         BluetoothDevice device = mDevices.get(position);
-        conn(device);
+//        conn(device);
+        Bundle b = new Bundle();
+        b.putParcelable(BluetoothDevice.EXTRA_DEVICE,device);
         Intent intent = new Intent(getApplicationContext(), BluetoothOperateActivity.class);
-//        intent.putExtra(device);
+        intent.putExtras(b);
         startActivity(intent);
     }
 
@@ -454,7 +421,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         long now = System.currentTimeMillis();
         if ((now - firstPressTime) > 2000){
             Snackbar snackbar = Snackbar.make(getCurrentFocus(),"再按一次退出",Toast.LENGTH_SHORT);
-                    setSnackbarColor(snackbar,Color.BLUE,Color.WHITE);
+                    snackbar_utils.setSnackbarColor(snackbar,Color.BLUE,Color.WHITE);
                     snackbar.show();
             firstPressTime = now;
         }else {
@@ -463,17 +430,5 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         }
     }
 
-    /**
-     *
-     * @param snackbar
-     * @param messageColor
-     * @param backgroundColor
-     */
-    public static void setSnackbarColor(Snackbar snackbar , int messageColor , int backgroundColor){
-        View view = snackbar.getView();
-        if (view != null){
-            view.setBackgroundColor(backgroundColor);
-            ((TextView)view.findViewById(R.id.snackbar_text)).setTextColor(messageColor);
-        }
-    }
+
 }

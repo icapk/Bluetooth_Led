@@ -66,7 +66,7 @@ public class DeviceAdapter extends BaseAdapter {
 
         if (device.getBluetoothClass().toString() != NUM_FOR_BLUETOOTH_TYPE_EARPHONE) {
 
-            holder.mImgType.setBackgroundResource(R.drawable.bluetooth);
+            holder.mImgType.setBackgroundResource(R.drawable.ic_signal_wifi_4_bar_black_24dp);
         }
         if (device.getBluetoothClass().toString() == NUM_FOR_BLUETOOTH_TYPE_PHONE) {
 //            System.out.println("设备号： "+device.getName()+device.getBluetoothClass().toString()+"----"+NUM_FOR_BLUETOOTH_TYPE_);
