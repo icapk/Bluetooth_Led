@@ -21,13 +21,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icapk.bluetooth.utils.snackbar_utils;
@@ -39,38 +37,36 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 import static android.support.design.widget.Snackbar.make;
 
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
+    @Bind(R.id.drawer_layout) DrawerLayout drawer_layout;
+    @Bind(R.id.navigation_view) NavigationView NavigationView;
+    @Bind(R.id.swiperefreshlayout) SwipeRefreshLayout mSwipeRefreshLayout;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.lv) ListView mLv;
+    @Bind(R.id.fab_search) FloatingActionButton btn;
+
     private int DISCOVERABLE_TIME = 300;
 
-
-    private FloatingActionButton btn;
     private BluetoothAdapter mBluetoothAdapter;
     private static final int REQUEST_ENABLE = 1;
-    private Toolbar toolbar;
 
     private String MyName;
     private String MyAddress;
-    private FloatingActionButton Fab;
 
-    private DrawerLayout drawer_layout;
-    private NavigationView NavigationView;
     private View headerView;
 
-    private ListView mLv;
     private DeviceAdapter mAdapter;
-    private TextView TV_Title;
     private OutputStream mOutputStream;
-    private TextView TV_Address;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
     private boolean isFlresh = false;
     private long firstPressTime = 0;
     private long mNow = 0;
-    private View coordinatorLayout;
-    private  GestureDetector gestureDetector;
 
 
 
@@ -79,22 +75,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         //获得设备本身的蓝牙适配器
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        drawer_layout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        NavigationView = (NavigationView)findViewById(R.id.navigation_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swiperefreshlayout);
-
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
-        btn = (FloatingActionButton)findViewById(R.id.fab_search);
-
-        mLv = (ListView)findViewById(R.id.lv);
         mAdapter = new DeviceAdapter(getApplicationContext(),mDevices);
         mLv.setAdapter(mAdapter);
         mLv.setOnItemClickListener(this);
-        TV_Address = (TextView)findViewById(R.id.tv_address);
 
 //        discoverable();
         init();
@@ -115,12 +103,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         return false;
     }
 
-
-
-
-
-
-
     /**
      * 初始化广播，搜索按钮及Toolbar的title
      */
@@ -132,7 +114,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mBluetoothReceiver, filter);
-
 
         /**
          * 下拉刷新

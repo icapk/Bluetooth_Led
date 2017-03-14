@@ -9,55 +9,28 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/opera_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:title="@string/title"
-        android:theme="@style/ToolbarTheme"
+        android:layout_height="match_parent">
 
-        >
-
-    </android.support.v7.widget.Toolbar>
-
-
-
-        <android.support.design.widget.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-
-            <EditText
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/opera_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/input_content"
-                android:layout_margin="10dp"/>
+                android:minHeight="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:title="@string/title"
+                android:theme="@style/ToolbarTheme">
+            </android.support.v7.widget.Toolbar>
 
+            <include layout="@layout/operate_layout"/>
 
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-           >
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/app_name"
-                android:layout_margin="10dp"/>
-        </android.support.design.widget.TextInputLayout>
-
-
-
-    </LinearLayout>
-
+        </LinearLayout>
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FAB_btn"
@@ -68,9 +41,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/reflesh"
+        android:src="@drawable/ic_send_white_24dp"
         android:tint="@color/white"
         android:visibility="visible"
-        android:background="#636363"  />
+        app:backgroundTint="@color/black" />
 
 </android.support.design.widget.CoordinatorLayout>
