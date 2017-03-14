@@ -1,4 +1,4 @@
-package com.icapk.bluetooth.utils;
+package com.icapk.bluetooth.Utils;
 
 import android.support.design.widget.Snackbar;
 import android.view.View;

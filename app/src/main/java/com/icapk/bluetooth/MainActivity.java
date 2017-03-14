@@ -28,7 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.icapk.bluetooth.utils.snackbar_utils;
+import com.icapk.bluetooth.Utils.snackbar_utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
