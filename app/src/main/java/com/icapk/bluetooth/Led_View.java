@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.icapk.bluetooth.Utils.FontUtils;
@@ -16,6 +17,8 @@ import com.icapk.bluetooth.Utils.FontUtils;
  */
 
 class Led_View extends TextView{
+
+    private static final String TAG = "Led_View";
 
     private FontUtils utils;
     /**
@@ -61,11 +64,20 @@ class Led_View extends TextView{
     /**
      * 需要显示的汉字
      */
-    private String text = "接";
+     String text = "测试";
+
+    public void sendWord(String str ){
+        this.text = str;
+        System.out.print(str+"nothing");
+        Log.i(TAG, "sendword" + str);
+        matrix = utils.getWordsInfo(text);
+    }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Led_View(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+
+
 
         selectPaint = new Paint();
         selectPaint.setStyle(Paint.Style.FILL);
@@ -77,13 +89,13 @@ class Led_View extends TextView{
         utils = new FontUtils(context);
         if (text != null){
             matrix = utils.getWordsInfo(text);
+            Log.i(TAG, text);
         }
         if (scroll)
         {
             thread = new ScrollThread();
             thread.start();
         }
-        System.out.print(text+"Nothing");
     }
     public Led_View(Context context) {
         this(context,null,0);
@@ -97,10 +109,7 @@ class Led_View extends TextView{
         this(context, attrs, defStyleAttr,0);
     }
 
-    public void sendword(String str ){
-        this.text = str;
-        System.out.print(str+"nothing");
-    }
+
 
 
     /*

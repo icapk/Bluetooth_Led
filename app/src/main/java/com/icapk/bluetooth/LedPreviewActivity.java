@@ -12,6 +12,8 @@ import butterknife.ButterKnife;
 
 public class LedPreviewActivity extends AppCompatActivity {
 
+    private static final String TAG = "LedPreviewActivity";
+
     private Context context = LedPreviewActivity.this;
     private String input_word;
 
@@ -27,9 +29,11 @@ public class LedPreviewActivity extends AppCompatActivity {
         Intent i = getIntent();
         input_word = i.getStringExtra("Input_Word");
 
+
         String word = "大家";
 
-        Led_view.sendword(word);
+//        Log.i(TAG, "onCreate");
+        Led_view.sendWord(input_word);
 
         Led_view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -38,7 +42,6 @@ public class LedPreviewActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
 
     @Override

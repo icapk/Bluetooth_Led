@@ -25,7 +25,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+
 public class BluetoothOperateActivity extends AppCompatActivity  {
+
 
     private Context mContext = BluetoothOperateActivity.this;
 
@@ -44,7 +46,8 @@ public class BluetoothOperateActivity extends AppCompatActivity  {
                 case 2:
 
                     Intent i = new Intent(getApplicationContext(), LedPreviewActivity.class);
-                    i.putExtra(Input_Word, Word_Input.getText().toString());
+                    i.putExtra("Input_Word", Word_Input.getText().toString());
+
                     startActivity(i);
 
 //                    fontUtils = new FontUtils().getWordsInfo(Word_Input.getText().toString());
@@ -84,7 +87,7 @@ public class BluetoothOperateActivity extends AppCompatActivity  {
     private long mNow = 0;
     private OutputStream mOutputStream;
     private BluetoothDevice device;
-    private String Input_Word ;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
