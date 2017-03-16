@@ -5,4 +5,5 @@
     <string name="close">关闭</string>
     <string name="ble_conned">已连接</string>
     <string name="input_content">请输入文字</string>
+
 </resources>

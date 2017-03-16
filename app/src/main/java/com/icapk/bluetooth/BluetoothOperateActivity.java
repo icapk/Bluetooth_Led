@@ -3,6 +3,7 @@ package com.icapk.bluetooth;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,8 +16,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.icapk.bluetooth.Utils.FontUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,15 +38,14 @@ public class BluetoothOperateActivity extends AppCompatActivity  {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                    Input_Word = Word_Input.getText().toString();
-                    FontUtils fontUtils = new FontUtils(mContext);
-//                    Word_Input.setText(fontUtils.getWordsInfo(Input_Word).toString());
 
-                    System.out.println(fontUtils.getWordsInfo(Input_Word));
-                    System.out.println(fontUtils.getWordsInfo(Input_Word).toString());
-                    Snackbar.make(getCurrentFocus(),"双击事件",Snackbar.LENGTH_INDEFINITE).show();
+                    Snackbar.make(getCurrentFocus(),"双击事件",Snackbar.LENGTH_SHORT).show();
                     break;
                 case 2:
+
+                    Intent i = new Intent(getApplicationContext(), LedPreviewActivity.class);
+                    i.putExtra(Input_Word, Word_Input.getText().toString());
+                    startActivity(i);
 
 //                    fontUtils = new FontUtils().getWordsInfo(Word_Input.getText().toString());
 //                    System.out.println(fontUtils.toString());
