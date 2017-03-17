@@ -6,17 +6,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    >
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/linearlayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/opera_toolbar"
                 android:layout_width="match_parent"
@@ -30,7 +30,6 @@
             <include layout="@layout/operate_layout"/>
 
         </LinearLayout>
-    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/FAB_btn"

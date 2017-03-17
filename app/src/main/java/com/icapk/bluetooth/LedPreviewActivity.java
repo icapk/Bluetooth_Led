@@ -29,10 +29,6 @@ public class LedPreviewActivity extends AppCompatActivity {
         Intent i = getIntent();
         input_word = i.getStringExtra("Input_Word");
 
-
-        String word = "大家";
-
-//        Log.i(TAG, "onCreate");
         Led_view.sendWord(input_word);
 
         Led_view.setOnLongClickListener(new View.OnLongClickListener() {

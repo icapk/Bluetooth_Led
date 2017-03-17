@@ -3,9 +3,8 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/search_button"
-        android:icon="@drawable/reflesh"
-        android:title="search"
+        android:id="@+id/search_menu"
+        android:title="@string/preview"
         app:showAsAction="ifRoom"/>
 
 </menu>

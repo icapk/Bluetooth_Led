@@ -4,18 +4,23 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.icapk.bluetooth.Utils.snackbar_utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -25,9 +30,12 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.icapk.bluetooth.R.id.linearlayout;
+
 
 public class BluetoothOperateActivity extends AppCompatActivity  {
 
+    private static final String TAG = "BluetoothOperate";
 
     private Context mContext = BluetoothOperateActivity.this;
 
@@ -40,19 +48,21 @@ public class BluetoothOperateActivity extends AppCompatActivity  {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-
-                    Snackbar.make(getCurrentFocus(),"双击事件",Snackbar.LENGTH_SHORT).show();
+                    Snackbar s = Snackbar.make(getCurrentFocus(),"双击事件",Snackbar.LENGTH_SHORT);
+                    snackbar_utils.setSnackbarColor(s, Color.GRAY,Color.WHITE);
+                    s.show();
                     break;
                 case 2:
-
-                    Intent i = new Intent(getApplicationContext(), LedPreviewActivity.class);
-                    i.putExtra("Input_Word", Word_Input.getText().toString());
-
-                    startActivity(i);
-
-//                    fontUtils = new FontUtils().getWordsInfo(Word_Input.getText().toString());
-//                    System.out.println(fontUtils.toString());
-                    Snackbar.make(getCurrentFocus(),"单击事件",Snackbar.LENGTH_SHORT).show();
+                    if (Word_Input.getText().toString().length() == 0){
+                        Snackbar snackbar = Snackbar.make(getCurrentFocus(),"输入不能为空！",Snackbar.LENGTH_SHORT);
+                        snackbar_utils.setSnackbarColor(snackbar, Color.GRAY,Color.WHITE);
+                        snackbar.show();
+                    }else {
+                        Intent i = new Intent(getApplicationContext(), LedPreviewActivity.class);
+                        i.putExtra("Input_Word", Word_Input.getText().toString());
+                        startActivity(i);
+                        Log.i(TAG, "Input_Word");
+                    }
                     break;
             }
         }
@@ -72,12 +82,12 @@ public class BluetoothOperateActivity extends AppCompatActivity  {
             mNow= 0;
         }else {
             //发送0.31s的延时message，便于区分单双击事件
-            hand.sendEmptyMessageDelayed(2, 310);
+            hand.sendEmptyMessageDelayed(2, 31);
         }
     }
 
-    @Bind(R.id.cooldinatorLayout_operate)
-    CoordinatorLayout CooldinatorLayout_Operate;
+    @Bind(linearlayout)
+    LinearLayout Linearlayout;
 
     @Bind(R.id.word_input)
     EditText Word_Input;
@@ -110,6 +120,7 @@ public class BluetoothOperateActivity extends AppCompatActivity  {
         //初始化Toolbar及其Navigation
         Opera_TB.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         Opera_TB.setTitle(device.getName());
+
         Opera_TB.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,15 +128,30 @@ public class BluetoothOperateActivity extends AppCompatActivity  {
             }
         });
 
-        //设置CooldinatorLayout，使其获得焦点，释放EditText的焦点
-        CooldinatorLayout_Operate.setOnTouchListener(new View.OnTouchListener() {
+        //Toolbar的menu点击事件
+        Opera_TB.inflateMenu(R.menu.menu_toolbar);
+        Opera_TB.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent i = new Intent(getApplicationContext(), LedPreviewActivity.class);
+                i.putExtra("Input_Word", Word_Input.getText().toString());
+                startActivity(i);
+                Snackbar snackbar = Snackbar.make(getCurrentFocus(),"预览",Snackbar.LENGTH_SHORT);
+                snackbar_utils.setSnackbarColor(snackbar, Color.GRAY,Color.WHITE);
+                snackbar.show();
+                return false;
+            }
+        });
+
+        //设置Linearlayout，使其获得焦点，释放EditText的焦点
+        Linearlayout.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                CooldinatorLayout_Operate.setFocusable(true);
-                CooldinatorLayout_Operate.setFocusableInTouchMode(true);
-                CooldinatorLayout_Operate.requestFocus();
+                Linearlayout.setFocusable(true);
+                Linearlayout.setFocusableInTouchMode(true);
+                Linearlayout.requestFocus();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(CooldinatorLayout_Operate.getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(Linearlayout.getWindowToken(), 0);
                 return false;
             }
         });

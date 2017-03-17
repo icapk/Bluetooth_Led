@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.TextView;
@@ -66,19 +68,31 @@ class Led_View extends TextView{
      */
      String text = "测试";
 
-    public void sendWord(String str ){
-        this.text = str;
-        System.out.print(str+"nothing");
-        Log.i(TAG, "sendword" + str);
-        matrix = utils.getWordsInfo(text);
+private final Handler handler = new Handler(){
+    public void handleMessage(Message msg) {
+        super.handleMessage(msg);
+        switch (msg.what) {
+            case 0:
+                while(scrollText) {
+                    if (0 == scrollDirection) {
+                        matrixLeftMove(matrix);
+                    } else {
+                        matrixRightMove(matrix);
+                    }
+                    Log.i(TAG, "handle.msg");
+                    postInvalidate();//刷新View
+                }
+                break;
+        }
     }
+};
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public Led_View(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
 
 
-
+        Log.i(TAG, "Led_View");
         selectPaint = new Paint();
         selectPaint.setStyle(Paint.Style.FILL);
         selectPaint.setColor(paintColor);
@@ -95,6 +109,7 @@ class Led_View extends TextView{
         {
             thread = new ScrollThread();
             thread.start();
+//            handler.sendEmptyMessageDelayed(0, sleepTime);
         }
     }
     public Led_View(Context context) {
@@ -109,7 +124,12 @@ class Led_View extends TextView{
         this(context, attrs, defStyleAttr,0);
     }
 
-
+    public void sendWord(String str ){
+        this.text = str;
+        System.out.print(str+"nothing");
+        Log.i(TAG, "sendword" + str);
+        matrix = utils.getWordsInfo(text);
+    }
 
 
     /*
@@ -133,6 +153,7 @@ class Led_View extends TextView{
                     matrixRightMove(matrix);
                 }
                 postInvalidate();//刷新View
+                Log.i(TAG, "thread");
             }
         }
     }

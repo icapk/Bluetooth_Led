@@ -21,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,12 +46,21 @@ import static android.support.design.widget.Snackbar.make;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
 
-    @Bind(R.id.drawer_layout) DrawerLayout drawer_layout;
-    @Bind(R.id.navigation_view) NavigationView NavigationView;
-    @Bind(R.id.swiperefreshlayout) SwipeRefreshLayout mSwipeRefreshLayout;
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.lv) ListView mLv;
-    @Bind(R.id.fab_search) FloatingActionButton btn;
+    private static final String TAG = "MainActivity";
+
+
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawer_layout;
+    @Bind(R.id.navigation_view)
+    NavigationView NavigationView;
+    @Bind(R.id.swiperefreshlayout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.lv)
+    ListView mLv;
+    @Bind(R.id.fab_search)
+    FloatingActionButton btn;
 
     private int DISCOVERABLE_TIME = 300;
 
@@ -69,8 +79,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private long mNow = 0;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +88,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         //获得设备本身的蓝牙适配器
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        mAdapter = new DeviceAdapter(getApplicationContext(),mDevices);
+        mAdapter = new DeviceAdapter(getApplicationContext(), mDevices);
         mLv.setAdapter(mAdapter);
         mLv.setOnItemClickListener(this);
 
@@ -93,10 +101,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     //当点击menu按键的时候执行这个方法
-    public boolean onMenuOpened(int featureId,Menu menu){
+    public boolean onMenuOpened(int featureId, Menu menu) {
 
-        make(getCurrentFocus(),"退出",Snackbar.LENGTH_SHORT)
-                .show();
+        Snackbar sk = Snackbar.make(getCurrentFocus(), "退出", Snackbar.LENGTH_SHORT);
+        snackbar_utils.setSnackbarColor(sk,Color.BLUE,Color.WHITE);
+                sk.show();
+        Log.i(TAG, "menu");
 //        setContentView(R.layout.layout_item);
 
 
@@ -119,7 +129,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
          * 下拉刷新
          */
         //设置下拉圆圈里进度条的颜色
-        mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE,Color.BLACK,Color.GREEN,Color.RED);
+        mSwipeRefreshLayout.setColorSchemeColors(Color.BLUE, Color.BLACK, Color.GREEN, Color.RED);
         //设置下拉圆圈的大小
         mSwipeRefreshLayout.setSize(SwipeRefreshLayout.DEFAULT);
         //设置手指下拉多少距离触发刷新
@@ -128,7 +138,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!isFlresh){
+                if (!isFlresh) {
                     isFlresh = true;
 
                     mDevices.clear();
@@ -137,12 +147,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                         @Override
                         public void run() {
                             mSwipeRefreshLayout.setRefreshing(false);
-                            Snackbar sk = Snackbar.make(getCurrentFocus(),"刷新完成", BaseTransientBottomBar.LENGTH_SHORT);
-                            snackbar_utils.setSnackbarColor(sk,Color.BLUE,Color.WHITE);
+                            Snackbar sk = Snackbar.make(getCurrentFocus(), "刷新完成", BaseTransientBottomBar.LENGTH_SHORT);
+                            snackbar_utils.setSnackbarColor(sk, Color.BLUE, Color.WHITE);
                             sk.show();
                             isFlresh = false;
                         }
-                    },12000);
+                    }, 12000);
                 }
             }
         });
@@ -154,13 +164,13 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case 1:
-                        Snackbar sk = Snackbar.make(findViewById(R.id.toolbar),"双击事件",Snackbar.LENGTH_SHORT);
-                        snackbar_utils.setSnackbarColor(sk,Color.BLUE,Color.WHITE);
+                        Snackbar sk = Snackbar.make(findViewById(R.id.toolbar), "双击事件", Snackbar.LENGTH_SHORT);
+                        snackbar_utils.setSnackbarColor(sk, Color.BLUE, Color.WHITE);
                         sk.show();
                         break;
                     case 2:
-                        Snackbar _sk = Snackbar.make(getCurrentFocus(),"单击事件",Snackbar.LENGTH_SHORT);
-                        snackbar_utils.setSnackbarColor(_sk,Color.BLUE,Color.WHITE);
+                        Snackbar _sk = Snackbar.make(getCurrentFocus(), "单击事件", Snackbar.LENGTH_SHORT);
+                        snackbar_utils.setSnackbarColor(_sk, Color.BLUE, Color.WHITE);
                         _sk.show();
                         break;
                 }
@@ -173,16 +183,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             public void onClick(View v) {
 //                mDevices.clear();
 
-                firstPressTime=mNow;
-                mNow= System.currentTimeMillis();
-                if (mNow - firstPressTime < 300){//双击事件
+                firstPressTime = mNow;
+                mNow = System.currentTimeMillis();
+                if (mNow - firstPressTime < 300) {//双击事件
                     //先移除消息栈里面的单击消息
                     handler.removeMessages(2);
                     handler.sendEmptyMessage(1);
-                    mNow= 0;
-                }else {
+                    mNow = 0;
+                } else {
                     //发送0.31s的延时message，便于区分单双击事件
-                    handler.sendEmptyMessageDelayed(2,310);
+                    handler.sendEmptyMessageDelayed(2, 310);
 //                    mBluetoothAdapter.startDiscovery();
 //                if (btn.getText().toString() == "正在搜索..."){
 //                    mBluetoothAdapter.cancelDiscovery();
@@ -195,13 +205,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
-
-        Toast.makeText(getApplicationContext(),MyName,Toast.LENGTH_SHORT).show();
-//        toolbar.setTitleTextColor(0x000000);
         toolbar.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Toast.makeText(getApplicationContext(),"重命名"+mBluetoothAdapter.getName(),Toast.LENGTH_SHORT).show();
+                Snackbar snackbar = Snackbar.make(getCurrentFocus(), "重命名" + mBluetoothAdapter.getName(), Snackbar.LENGTH_SHORT);
+                snackbar_utils.setSnackbarColor(snackbar, Color.GRAY, Color.WHITE);
+                snackbar.show();
 //                mBluetoothAdapter.setName("M2");
 
                 return false;
@@ -210,6 +219,20 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         MyName = mBluetoothAdapter.getName();
         MyAddress = mBluetoothAdapter.getAddress();
         toolbar.setTitle(MyName);
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.search_button:
+                        Snackbar snackbar = Snackbar.make(getCurrentFocus(), "menu", Toast.LENGTH_SHORT);
+                        snackbar_utils.setSnackbarColor(snackbar, Color.BLUE, Color.WHITE);
+                        snackbar.show();
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
 
@@ -222,18 +245,17 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //判断设备是否存在蓝牙
-        if (mBluetoothAdapter == null ){
-            Toast.makeText(this,"此设备没有蓝牙功能",Toast.LENGTH_SHORT).show();
+        if (mBluetoothAdapter == null) {
+            Toast.makeText(this, "此设备没有蓝牙功能", Toast.LENGTH_SHORT).show();
         }
-        if (!mBluetoothAdapter.isEnabled()){ //蓝牙未开启
+        if (!mBluetoothAdapter.isEnabled()) { //蓝牙未开启
             //弹出对话框提示用户是否打开蓝牙
             Intent enabler = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enabler,REQUEST_ENABLE);
+            startActivityForResult(enabler, REQUEST_ENABLE);
         }
     }
 
     /**
-     *
      * 初始化已配对列表
      */
     private void initdevice() {
@@ -241,16 +263,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         //得到已经配对的蓝牙设备
         Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-        if (devices.size() > 0)
-        {
-            for (Iterator iterator = devices.iterator(); iterator.hasNext();)
-            {
+        if (devices.size() > 0) {
+            for (Iterator iterator = devices.iterator(); iterator.hasNext(); ) {
                 BluetoothDevice bluetoothDevice = (BluetoothDevice) iterator.next();
                 //得到蓝牙设备的地址与名称
                 String name = bluetoothDevice.getName();
                 String mac = bluetoothDevice.getBluetoothClass().toString();
 //                Toast.makeText(getApplicationContext(),name+mac,Toast.LENGTH_SHORT).show();
-                System.out.println("已配对远程设备名称   "+name+"   "+mac);
+                System.out.println("已配对远程设备名称   " + name + "   " + mac);
 //                mLv.setAdapter();
                 mDevices.add(bluetoothDevice);
                 mAdapter.notifyDataSetChanged();
@@ -303,7 +323,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                switch(item.getItemId()) {
+                switch (item.getItemId()) {
                     case R.id.nv_friends:
                         make(getCurrentFocus(), "点击了 朋友", Snackbar.LENGTH_SHORT)
                                 .show();
@@ -319,7 +339,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
-        toolbar.inflateMenu(R.menu.menu_toolbar);
 
         ActionBarDrawerToggle drawertoggle = new ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.open, R.string.close);
         drawertoggle.syncState();
@@ -331,6 +350,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     /**
      * listview的点击事件
      * 点击连接到蓝牙
+     *
      * @param parent
      * @param view
      * @param position
@@ -341,7 +361,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         BluetoothDevice device = mDevices.get(position);
 //        conn(device);
         Bundle b = new Bundle();
-        b.putParcelable(BluetoothDevice.EXTRA_DEVICE,device);
+        b.putParcelable(BluetoothDevice.EXTRA_DEVICE, device);
         Intent intent = new Intent(getApplicationContext(), BluetoothOperateActivity.class);
         intent.putExtras(b);
         startActivity(intent);
@@ -350,12 +370,13 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     /**
      * 蓝牙连接实现
      * 作为客户端连接蓝牙模块
+     *
      * @param device
      */
     private void conn(final BluetoothDevice device) {
-       //建立蓝牙连接属于耗时操作，类似TCP Socket，需要放在子线程
-        new Thread(){
-            public void run(){
+        //建立蓝牙连接属于耗时操作，类似TCP Socket，需要放在子线程
+        new Thread() {
+            public void run() {
                 try {
                     //获取BluetoothSocket，UUID需要和蓝牙服务端保持一致
                     BluetoothSocket blurtoothsocket = device.createRfcommSocketToServiceRecord(UUID
@@ -369,8 +390,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(),"连接成功。。。",
-                            Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "连接成功。。。",
+                                    Toast.LENGTH_SHORT).show();
 //                            TV_Address.setText("已连接");
                         }
                     });
@@ -384,7 +405,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     /**
      * 软件开启启动可检测性
      */
-    private void discoverable(){
+    private void discoverable() {
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, DISCOVERABLE_TIME);
         startActivity(discoverableIntent);
@@ -398,14 +419,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     /**
      * 双击返回键退出应用
      */
-    public void onBackPressed(){
+    public void onBackPressed() {
         long now = System.currentTimeMillis();
-        if ((now - firstPressTime) > 2000){
-            Snackbar snackbar = Snackbar.make(getCurrentFocus(),"再按一次退出",Toast.LENGTH_SHORT);
-                    snackbar_utils.setSnackbarColor(snackbar,Color.BLUE,Color.WHITE);
-                    snackbar.show();
+        if ((now - firstPressTime) > 2000) {
+            Snackbar snackbar = Snackbar.make(getCurrentFocus(), "再按一次退出", Toast.LENGTH_SHORT);
+            snackbar_utils.setSnackbarColor(snackbar, Color.BLUE, Color.WHITE);
+            snackbar.show();
             firstPressTime = now;
-        }else {
+        } else {
             finish();
             System.exit(0);
         }

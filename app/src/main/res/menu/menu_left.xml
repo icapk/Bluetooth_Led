@@ -5,11 +5,11 @@
 
         <item
             android:id="@+id/nv_friends"
-
+            android:icon="@mipmap/ic_launcher"
             android:title="朋友" />
         <item
             android:id="@+id/nv_location"
-
+            android:icon="@mipmap/ic_launcher"
             android:title="本地" />
         <item
             android:id="@+id/nv_update"
